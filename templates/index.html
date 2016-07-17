@@ -1,0 +1,22 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSV</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+<div class="container">
+    
+<h1>Enviar Imagen</h1>
+    <ul>
+        <li><a href="{% url 'receiver_image' %}">Abrir Cliente</a></li>
+        <li><a href="{% url 'sender_image' %}">Abrir Servidor</a></li>
+    </ul>
+</div>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+</body>
+</html>
