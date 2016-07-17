@@ -8,7 +8,6 @@ import os
 from time import sleep
 import matplotlib.pyplot as plt
 from metodos import *
-from PIL import Image
 
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
