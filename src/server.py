@@ -17,7 +17,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Se elimina el archivo en donde se guardan los datos para el grafico
 os.remove('texto.txt')
-f=open ("reset.png", "rb")
+f=open ("image.png", "rb")
 print type(f)
 print sys.getsizeof(f)
 buf = 512

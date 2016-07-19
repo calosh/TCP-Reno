@@ -35,8 +35,6 @@ def sender_image(request):
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
             os.remove(os.path.join(BASE_DIR, 'reno/texto.txt'))
-            #f = open("reset.png", "rb")
-            buf = 512
 
             cont = 1
             estado = 0
@@ -46,7 +44,6 @@ def sender_image(request):
             VC = 512  # 1MSS
             congestion = 6144  # 512*12
             aux_congestion = congestion
-            # lista = []
             data = True
             while (data):
                 data = file.read(VC)
@@ -157,7 +154,7 @@ def receiver_image(request):
     sock.bind((UDP_IP, UDP_PORT))
 
     # buf = 1024
-    buf = 16384
+    buf = 7168 # 512*14
 
     f = open(os.path.join(BASE_DIR,'static/miImagen.png'), 'wb')
 

@@ -1,6 +1,10 @@
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def guardar_info(data):
-	fd = open('texto.txt', 'a')
+	fd = open(os.path.join(BASE_DIR,'texto.txt'), 'a')
 	fd.write(data)
 	fd.close()
 
