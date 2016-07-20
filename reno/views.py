@@ -12,6 +12,10 @@ from metodos import *
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+IP_SERVER = '192.168.1.1'
+IP_CLIENTE = '192.168.1.2'
+PUERTO = 5005
+
 def index(request):
     return render(request, 'index.html')
 
@@ -23,17 +27,13 @@ def sender_image(request):
             # print file.name           # Gives name
             # print file.content_type   # Gives Content type text/html etc
             # print file.size           # Gives file's size in byte
-            UDP_IP = "127.0.0.1"
-            UDP_PORT = 5005
-
-            print "UDP target IP:", UDP_IP
-            print "UDP target port:", UDP_PORT
+            #UDP_IP = "127.0.0.1"
+            #UDP_IP = "192.168.1.1"
+            #UDP_PORT = 5006
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
             # Se elimina el archivo en donde se guardan los datos para el grafico
-            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
             os.remove(os.path.join(BASE_DIR, 'reno/texto.txt'))
 
             cont = 1
@@ -52,7 +52,8 @@ def sender_image(request):
                 if estado == 0:
                     print "Arranque lento", VC / 512
                     if VC < umbral:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -60,7 +61,8 @@ def sender_image(request):
                         cont += 1
                         VC *= 2
                     elif VC >= umbral:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -74,7 +76,8 @@ def sender_image(request):
                 elif estado == 1:
                     print "Evitacion de la congestion", VC / 512
                     if VC < congestion:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -82,7 +85,8 @@ def sender_image(request):
                         VC += 512
                         cont += 1
                     elif VC >= congestion:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -99,7 +103,8 @@ def sender_image(request):
                 elif estado == 2 and contC <= 2:
                     print "Recuperacion Rapida", VC / 512
                     if VC < congestion:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -107,7 +112,8 @@ def sender_image(request):
                         VC += 512
                         cont += 1
                     elif VC >= congestion and contC < 2:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -122,7 +128,8 @@ def sender_image(request):
 
                         continue
                     elif VC >= congestion and contC == 2:
-                        sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
+                        sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
                         recv_data, addr = sock.recvfrom(2048)
                         print "Datos Recibidos: ", recv_data
@@ -141,17 +148,16 @@ def sender_image(request):
 
                 sleep(1)
 
-            sock.sendto(" " + "<->" + 'fin', (UDP_IP, UDP_PORT))
+            #sock.sendto(" " + "<->" + 'fin', (UDP_IP, UDP_PORT))
+            sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
             sock.close()
 
     return render(request, 'sender.html')
 
 def receiver_image(request):
-    UDP_IP = "127.0.0.1"
-    UDP_PORT = 5005
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((UDP_IP, UDP_PORT))
+    #sock.bind((UDP_IP, UDP_PORT))
+    sock.bind((IP_CLIENTE, PUERTO))
 
     # buf = 1024
     buf = 7168 # 512*14
@@ -160,7 +166,8 @@ def receiver_image(request):
 
     data, addr = sock.recvfrom(buf)
     # Envia ACK
-    sock.sendto("ACK", addr)
+    #sock.sendto("ACK", addr)
+    sock.sendto("ACK", (IP_SERVER,PUERTO))
     cont = ""
     info = []
 
@@ -176,8 +183,8 @@ def receiver_image(request):
         # buf=buf*2
         data, addr = sock.recvfrom(buf)
         # Envia ACK
-        sock.sendto("ACK", addr)
-
+        #sock.sendto("ACK", addr)
+        sock.sendto("ACK", (IP_SERVER, PUERTO))
 
     #response = HttpResponse(mimetype="image/png")
     #f.save(response, "PNG")
