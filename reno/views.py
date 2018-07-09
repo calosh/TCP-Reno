@@ -12,9 +12,9 @@ from metodos import *
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-IP_SERVER = '192.168.1.1'
-IP_CLIENTE = '192.168.1.2'
-PUERTO = 5005
+IP_SERVER = 'localhost'
+IP_CLIENTE = 'localhost'
+PUERTO = 5017
 
 def index(request):
     return render(request, 'index.html')
@@ -28,16 +28,18 @@ def sender_image(request):
             # print file.content_type   # Gives Content type text/html etc
             # print file.size           # Gives file's size in byte
             #UDP_IP = "127.0.0.1"
-            #UDP_IP = "192.168.1.1"
+            #UDP_IP = "192.168.1.1"cd
             #UDP_PORT = 5006
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
             # Se elimina el archivo en donde se guardan los datos para el grafico
             os.remove(os.path.join(BASE_DIR, 'reno/texto.txt'))
-
+            #Contador de paquetes.
             cont = 1
+            #Estados del Protocolo TCP Reno.
             estado = 0
+            # Contador de la Congestion
             contC = 1
 
             umbral = 4096  # 512*8
@@ -55,8 +57,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         cont += 1
                         VC *= 2
@@ -64,8 +66,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         VC += 512
                         cont += 1
@@ -79,8 +81,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                       # print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         VC += 512
                         cont += 1
@@ -88,8 +90,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         umbral = VC / 2
                         VC = umbral
@@ -106,8 +108,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         VC += 512
                         cont += 1
@@ -115,8 +117,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         umbral = VC / 2
                         VC = umbral
@@ -131,8 +133,8 @@ def sender_image(request):
                         #sock.sendto(data + "<->" + str(cont), (UDP_IP, UDP_PORT))
                         sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
                         # Recibe ACK
-                        recv_data, addr = sock.recvfrom(2048)
-                        print "Datos Recibidos: ", recv_data
+                        #recv_data, addr = sock.recvfrom(2048)
+                        #print "Datos Recibidos: ", recv_data
                         guardar_info(str(cont) + ',' + str(VC / 512) + '\n')
                         umbral = 4096
                         VC = 512
@@ -148,8 +150,8 @@ def sender_image(request):
 
                 sleep(1)
 
-            #sock.sendto(" " + "<->" + 'fin', (UDP_IP, UDP_PORT))
-            sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
+            sock.sendto(" " + "<->" + 'fin', (IP_CLIENTE, PUERTO))
+            #sock.sendto(data + "<->" + str(cont), (IP_CLIENTE, PUERTO))
             sock.close()
 
     return render(request, 'sender.html')
@@ -160,20 +162,22 @@ def receiver_image(request):
     sock.bind((IP_CLIENTE, PUERTO))
 
     # buf = 1024
-    buf = 7168 # 512*14
+    buf = 7168 # 512*14 7168
 
     f = open(os.path.join(BASE_DIR,'static/miImagen.png'), 'wb')
 
     data, addr = sock.recvfrom(buf)
     # Envia ACK
     #sock.sendto("ACK", addr)
-    sock.sendto("ACK", (IP_SERVER,PUERTO))
+    #sock.sendto("ACK", (IP_SERVER,PUERTO))
     cont = ""
     info = []
 
     while True:
         print "PACKAGE RECEIVED..."
         info = data.split("<->")
+        print info
+        print len (info)
         # print info
         print info[1]
         if info[1] == 'fin':
@@ -184,7 +188,7 @@ def receiver_image(request):
         data, addr = sock.recvfrom(buf)
         # Envia ACK
         #sock.sendto("ACK", addr)
-        sock.sendto("ACK", (IP_SERVER, PUERTO))
+        #sock.sendto("ACK", (IP_SERVER, PUERTO))
 
     #response = HttpResponse(mimetype="image/png")
     #f.save(response, "PNG")
